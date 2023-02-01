@@ -1,0 +1,4 @@
+cluster_id,replica_set_id,name,host_id,replica_state,cpu,ram_mb,wt_cache_size_gb,version
+63d92da3903ec102a1b9091f,TestRS,TestRS_7,ceedd4a33f21254aa7534227ff605062,PRIMARY,2,3816,0.25,4.2.23
+63d92da3903ec102a1b9091f,TestRS,TestRS_8,08d9e1253a200bd2434562c863afa8de,SECONDARY,2,3816,0.25,4.2.23
+63d92da3903ec102a1b9091f,TestRS,TestRS_9,6bd0577024b6068d0b7bbbab14d3648c,SECONDARY,2,3816,0.25,4.2.23

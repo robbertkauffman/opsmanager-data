@@ -27,3 +27,12 @@ bunch of JSON files containing the metrics.
 
 If you get any 403 errors, check if you are using the correct BASEURL or 
 AUTHCOOKIE.
+
+## Sample output
+| cluster_id | replica_set_id | name     | host_id | replica_state | cpu | ram_mb  | wt_cache_size_gb | version |
+| ---------- | -------------- | -------- | ------- | ------------- | --- | ------- | ---------------- | ------- |
+| 63d...     | TestRS         | TestRS_7 | cee...  | PRIMARY       | 2   | 3816    | 0.25             | 4.2.23  |
+| 63d...     | TestRS         | TestRS_8 | 08d...  | SECONDARY     | 2   | 3816    | 0.25             | 4.2.23  |
+| 63d...     | TestRS         | TestRS_9 | 6bd...  | SECONDARY     | 2   | 3816    | 0.25             | 4.2.23  |
+
+For sample output of the metrics, please see the [sample-metrics.json](sample-metrics.json) file.
