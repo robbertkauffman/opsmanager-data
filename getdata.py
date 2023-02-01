@@ -8,10 +8,9 @@ import sys
 ORGS_URL = "{}/settings/orgs"
 GROUPS_URL = "{}/orgs/{}/groups"
 SERVER_URL = "{}/servers/list/{}?mapAutomationAgents=true&mapBackupAgents=true&mapMonitoringAgents=true&mapProcesses=true"
-# HOSTS_URL = "{}/deployment/{}/replset/{}"
 METRICS_URL = "{}/metrics/v1/groups/{}/hosts/{}/replicaset?retention={}"
 CONFIG_DB_URL = "{}/metrics/v1/groups/{}/hosts/{}/databases/storage?retention={}&bucketed=false&databaseName=config"
-RETENTION_METRICS = ["172800000", "604800000"] # 1 week
+RETENTION_METRICS = ["172800000", "604800000"] # 48 hours & 1 week
 RETENTION_CONFIG_DB = "3600000" # 1 hour
 
 def main():
@@ -33,7 +32,8 @@ def main():
           download_metrics(org_id, project_id, cluster_id, host_id, retention, "-metrics-" + retention)
         # download config db metrics
         download_metrics(org_id, project_id, cluster_id, host_id, RETENTION_CONFIG_DB, "-configdb")
-  print("Successfully downloaded cluster data and metrics!")
+    print(f"Processed org ${org_id}")
+  print("Successfully downloaded all cluster data and metrics!")
 
 def get_orgs():
   url = ORGS_URL.format(BASE_URL)
@@ -62,8 +62,8 @@ def get_servers(project_id):
 
 def save_servers_and_get_hosts(servers):
   hosts = []
-  with open('servers.csv', 'w', newline='') as csvfile:
-    fieldnames = ['cluster_id', 'replica_set_id', 'name', 'host_id', 'replica_state', 'cores', 'ram', 'wt_cache_size', 'version']
+  with open('clusters.csv', 'w', newline='') as csvfile:
+    fieldnames = ['cluster_id', 'replica_set_id', 'name', 'host_id', 'replica_state', 'cpu', 'ram_mb', 'wt_cache_size_gb', 'version']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
     writer.writeheader()
     for server in servers:
@@ -81,13 +81,13 @@ def save_servers_and_get_hosts(servers):
         host_id = get_prop(state, 'hostId')
         replica_state = get_prop(state, 'replicaState')
         # hostname = process['hostname']
-        cores = get_prop(state, 'hostInfo.Cores')
-        ram = get_prop(state, 'hostInfo.RAM (MB)')
-        wt_cache_size = get_prop(process, 'args2_6.storage.wiredTiger.engineConfig.cacheSizeGB')
+        cpu = get_prop(state, 'hostInfo.Cores')
+        ram_mb = get_prop(state, 'hostInfo.RAM (MB)')
+        wt_cache_size_gb = get_prop(process, 'args2_6.storage.wiredTiger.engineConfig.cacheSizeGB')
         version = get_prop(state, 'version')
         hosts.append((cluster_id, host_id))
         
-        writer.writerow({'cluster_id': cluster_id, 'replica_set_id': replica_set_id, 'name': name, 'host_id': host_id, 'replica_state': replica_state, 'cores': cores, 'ram': ram, 'wt_cache_size': wt_cache_size, 'version': version})
+        writer.writerow({'cluster_id': cluster_id, 'replica_set_id': replica_set_id, 'name': name, 'host_id': host_id, 'replica_state': replica_state, 'cpu': cpu, 'ram_mb': ram_mb, 'wt_cache_size_gb': wt_cache_size_gb, 'version': version})
     
     return hosts
 
