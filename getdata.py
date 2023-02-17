@@ -37,7 +37,7 @@ def main():
 
 def get_orgs():
   url = ORGS_URL.format(BASE_URL)
-  resp = requests.get(url, headers=HEADERS)
+  resp = requests.get(url, headers=HEADERS, verify=NO_VERIFY)
   if resp.ok:
     return resp.json()
   else:
@@ -46,7 +46,7 @@ def get_orgs():
 
 def get_projects(org_id):
   url = GROUPS_URL.format(BASE_URL, org_id)
-  resp = requests.get(url, headers=HEADERS)
+  resp = requests.get(url, headers=HEADERS, verify=NO_VERIFY)
   if resp.ok:
     return resp.json()
   else:
@@ -54,7 +54,7 @@ def get_projects(org_id):
 
 def get_servers(project_id):
   url = SERVER_URL.format(BASE_URL, project_id)
-  resp = requests.get(url, headers=HEADERS)
+  resp = requests.get(url, headers=HEADERS, verify=NO_VERIFY)
   if resp.ok:
     return resp.json()
   else:
@@ -107,7 +107,7 @@ def get_prop(obj, prop):
 
 def download_metrics(org_id, project_id, cluster_id, host_id, retention, file_suffix):
   url = METRICS_URL.format(BASE_URL, project_id, host_id, retention)
-  resp = requests.get(url, headers=HEADERS)
+  resp = requests.get(url, headers=HEADERS, verify=NO_VERIFY)
   if not resp.ok:
     exit_on_bad_response(resp)
   metrics_json = resp.json()
@@ -129,6 +129,7 @@ if __name__ == '__main__':
   parser = ArgumentParser(description=description)
   parser.add_argument('base_url', help="Base URL for Ops Manager", metavar='BASEURL')
   parser.add_argument('auth_cookie', help="Authentication cookie for Ops Manager", metavar='AUTHCOOKIE')
+  parser.add_argument('-n', '--noverify', help="Do not verify SSL certificate", action='store_false')
 
   args = parser.parse_args()
   global BASE_URL
@@ -137,5 +138,7 @@ if __name__ == '__main__':
   HEADERS = {
     'Cookie': 'mmsa-hosted=' + args.auth_cookie
   }
+  global NO_VERIFY
+  NO_VERIFY = args.noverify
 
   main()
