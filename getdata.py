@@ -68,26 +68,28 @@ def save_servers_and_get_hosts(servers):
     writer.writeheader()
     for server in servers:
       # if server['processes']:
-      process = get_prop(server, 'processes')[0]
-      state = get_prop(process, 'state')
-      process_type = get_prop(process, 'processType')
-      is_conf = get_prop(state, 'isConf')
-      last_ping = get_prop(state, 'lastPing')
-      if process_type == 'mongod' and is_conf == False and last_ping != 0:
-      # and state['replicaState'] == 'PRIMARY':
-        cluster_id = get_prop(state, 'clusterId')
-        replica_set_id = get_prop(state, 'replicaSetId')
-        name = get_prop(process, 'name')
-        host_id = get_prop(state, 'hostId')
-        replica_state = get_prop(state, 'replicaState')
-        # hostname = process['hostname']
-        cpu = get_prop(state, 'hostInfo.Cores')
-        ram_mb = get_prop(state, 'hostInfo.RAM (MB)')
-        wt_cache_size_gb = get_prop(process, 'args2_6.storage.wiredTiger.engineConfig.cacheSizeGB')
-        version = get_prop(state, 'version')
-        hosts.append((cluster_id, host_id))
-        
-        writer.writerow({'cluster_id': cluster_id, 'replica_set_id': replica_set_id, 'name': name, 'host_id': host_id, 'replica_state': replica_state, 'cpu': cpu, 'ram_mb': ram_mb, 'wt_cache_size_gb': wt_cache_size_gb, 'version': version})
+      process = get_prop(server, 'processes')
+      if process and len(process) > 0:
+        process = process[0]
+        state = get_prop(process, 'state')
+        process_type = get_prop(process, 'processType')
+        is_conf = get_prop(state, 'isConf')
+        last_ping = get_prop(state, 'lastPing')
+        if process_type == 'mongod' and is_conf == False and last_ping != 0:
+        # and state['replicaState'] == 'PRIMARY':
+          cluster_id = get_prop(state, 'clusterId')
+          replica_set_id = get_prop(state, 'replicaSetId')
+          name = get_prop(process, 'name')
+          host_id = get_prop(state, 'hostId')
+          replica_state = get_prop(state, 'replicaState')
+          # hostname = process['hostname']
+          cpu = get_prop(state, 'hostInfo.Cores')
+          ram_mb = get_prop(state, 'hostInfo.RAM (MB)')
+          wt_cache_size_gb = get_prop(process, 'args2_6.storage.wiredTiger.engineConfig.cacheSizeGB')
+          version = get_prop(state, 'version')
+          hosts.append((cluster_id, host_id))
+          
+          writer.writerow({'cluster_id': cluster_id, 'replica_set_id': replica_set_id, 'name': name, 'host_id': host_id, 'replica_state': replica_state, 'cpu': cpu, 'ram_mb': ram_mb, 'wt_cache_size_gb': wt_cache_size_gb, 'version': version})
     
     return hosts
 
